@@ -14,7 +14,6 @@ async function insertProducts() {
 const result = await getArticles()
     .then((APIreturn) => {
     const articles = APIreturn;
-    console.table(articles);
     for (let article in articles) {
         // Insertion de l'élément "a"
         let productLink = document.createElement("a");
