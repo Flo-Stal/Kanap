@@ -1,6 +1,10 @@
 const str = window.location.href;
 const url = new URL(str);
 const idProduct = url.searchParams.get("id");
+let article = "";
+
+const color = document. querySelector("#colors"); 
+const quantity = document.querySelector("#quantity");
 
 
 getArticle();
@@ -39,9 +43,6 @@ function insertionElt(article){
 
     // Insertion du titre de la page
     document.title = article.name
-    console.log(article);
-    console.log(productName);
-
 
     // Insertion du prix
     let productPrice = document.querySelector("#price");
@@ -61,9 +62,80 @@ function insertionElt(article){
         productColors.value = colors;
         productColors.innerHTML = colors;
     }
-    
+    addToCart(article);
 }
 
+//Panier
+function addToCart(article) {
+    const btn_addToCart = document.querySelector("#addToCart");
+
+    //Vérifier les conditions du click
+    btn_addToCart.addEventListener("click", (e)=>{
+        if (quantity.value > 0 && quantity.value <=100 && quantity.value != 0 && color.value != 0 ){
+
+    //Recupération du choix de la couleur
+    let colorChoice = color.value;
+                
+    //Recupération du choix de la quantité
+    let quantityChoice = quantity.value;
+
+    //Récupération des infos 
+    let options = {
+        productId: idProduct,
+        productColor: colorChoice,
+        productQuantity: quantityChoice,
+        productName: article.name,
+        productPrice: article.price,
+        productDescription: article.description,
+        productImg: article.imageUrl,
+        productAltImg: article.altTxt
+    };
+
+
+    //Initialisation du local storage
+    let productLocalStorage = JSON.parse(localStorage.getItem("product"));
+
+    //fenêtre pop-up
+    const popupConfirmation =() =>{
+        if(window.confirm(`Votre séléction de ${quantityChoice} ${article.name}, de couleur "${colorChoice}", est ajoutée au panier
+Pour consulter votre panier, cliquez sur OK`)){
+            window.location.href ="cart.html";
+        }
+    }
+
+    //Sauvegarde des choix dans le local storage
+    //Si le panier n'est pas vide
+    if (productLocalStorage) {
+        const productInCart = productLocalStorage.find(
+            (elt) => elt.productId === idProduct && elt.productColor === colorChoice);
+
+            //Si c'est le même produit
+            if (productInCart) {
+                let addition =
+                parseInt(options.productQuantity) + parseInt(productInCart.productQuantity);
+                productInCart.productQuantity = addition;
+                localStorage.setItem("product", JSON.stringify(productLocalStorage));
+                console.table(productLocalStorage);
+                console.log(addition);
+                popupConfirmation();
+            //Si ce n'est pas le même produit
+            } else {
+                productLocalStorage.push(options);
+                localStorage.setItem("product", JSON.stringify(productLocalStorage));
+                console.table(productLocalStorage);
+                popupConfirmation();
+            }
+
+        //Si le panier est vide
+        } else {
+            productLocalStorage =[];
+            productLocalStorage.push(options);
+            localStorage.setItem("product", JSON.stringify(productLocalStorage));
+            console.table(productLocalStorage);
+            popupConfirmation();
+        }}
+        });
+    }
 
 
 
