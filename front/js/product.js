@@ -7,10 +7,10 @@ const color = document. querySelector("#colors");
 const quantity = document.querySelector("#quantity");
 
 
-getArticle();
+getProduct();
 
 // Récupération des articles de l'API
-function getArticle() {
+function getProduct() {
     fetch("http://localhost:3000/api/products/" + idProduct)
     .then((res) => {
         return res.json();
