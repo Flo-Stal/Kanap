@@ -8,11 +8,13 @@ getCart()
 function getCart() {
     if (productLocalStorage === null || productLocalStorage == 0) {
     document.querySelector("#cart__items").innerHTML = `<p>Votre panier est vide</p>`;
-    } else {
+    } else { 
+
 for (let product in productLocalStorage){
     // Insertion de l'élément "article"
     let productArticle = document.createElement("article");
     document.querySelector("#cart__items").appendChild(productArticle);
+    productArticle.className = "cart__item";
     productArticle.setAttribute('data-id', productLocalStorage[product].productId);
 
         // Insertion de l'élément "div"
@@ -34,9 +36,9 @@ for (let product in productLocalStorage){
         // Insertion de l'élément "div"
     let productItemContentTitlePrice = document.createElement("div");
     productItemContent.appendChild(productItemContentTitlePrice);
-    productItemContentTitlePrice.className = "cart__item__content__titlePrice";
+    productItemContentTitlePrice.className = "cart__item__content__description";
     
-    // Insertion du titre h3
+    // Insertion du titre h2
     let productTitle = document.createElement("h2");
     productItemContentTitlePrice.appendChild(productTitle);
     productTitle.innerHTML = productLocalStorage[product].productName;
@@ -87,6 +89,94 @@ for (let product in productLocalStorage){
     productItemContentSettingsDelete.appendChild(productSupprimer);
     productSupprimer.className = "deleteItem";
     productSupprimer.innerHTML = "Supprimer";
-}
+} 
 }}
+
+function getTotals(){
+
+    // Récupération du total des quantités
+    const eltQuantity = document.querySelectorAll(".itemQuantity");
+    const myLength = eltQuantity.length;
+    let totalQuantity = 0;
+    console.log(myLength);
+
+    for (let i = 0; i < myLength; i++) {
+        totalQuantity += eltQuantity[i].valueAsNumber;
+    }
+
+    let productTotalQuantity = document.querySelector('#totalQuantity');
+    productTotalQuantity.innerHTML = totalQuantity;
+    console.log(totalQuantity);
+
+    // Récupération du prix total
+    let totalPrice = 0;
+
+    for (let i = 0; i < myLength; i++) {
+        totalPrice += (eltQuantity[i].valueAsNumber * productLocalStorage[i].productPrice);
+    }
+
+    let productTotalPrice = document.querySelector('#totalPrice');
+    productTotalPrice.innerHTML = totalPrice;
+    console.log(totalPrice);
+}
+getTotals()
+
+
+// Modification des quantités produit
+function modifyQuantity() {
+    let changeQuantity = document.querySelectorAll(".itemQuantity");
+    let choiceQuantity = Number(changeQuantity[0].value)
+
+    for (let i = 0; i < changeQuantity.length; i++){
+        changeQuantity[i].addEventListener("change" , (event) => {
+            
+            if (choiceQuantity > 0 && choiceQuantity <=100 && choiceQuantity != 0  && Number.isInteger(Number(changeQuantity[0].value))) {
+                //Selection de l'element à modifier
+            let baseQuantity = productLocalStorage[i].productQuantity;
+            let editQuantity = changeQuantity[i].valueAsNumber;
+
+            const productInCart = productLocalStorage.find((elt) => elt.editQuantity !== baseQuantity);
+            productInCart.productQuantity = editQuantity;
+            productLocalStorage[i].productQuantity = productInCart.productQuantity;
+
+            localStorage.setItem("product", JSON.stringify(productLocalStorage));
+        
+            // reload de la page
+            location.reload();
+            } else {
+                alert("Merci de séléctionner une quantité valide (entre 1 et 100)")
+            }
+            
+            event.preventDefault();
+        })
+    }
+}
+modifyQuantity();
+
+
+
+// Suppression d'un produit
+function deleteProduct() {
+    let deleteBtn = document.querySelectorAll(".deleteItem");
+
+    for (let i = 0; i < deleteBtn.length; i++){
+        deleteBtn[i].addEventListener("click" , (event) => {
+            event.preventDefault();
+
+            //Selection de l'element à supprimer 
+            let idDelete = productLocalStorage[i].productId;
+            let colorDelete = productLocalStorage[i].productColor;
+
+            productLocalStorage = productLocalStorage.filter( el => el.productId !== idDelete || el.productColor !== colorDelete );
+            
+            localStorage.setItem("product", JSON.stringify(productLocalStorage));
+
+            //Alerte et reload de la page
+            alert("le produit a bien été supprimé du panier");
+            location.reload();
+        })
+    }
+}
+deleteProduct();
+
 

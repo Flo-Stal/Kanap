@@ -71,7 +71,7 @@ function addToCart(article) {
 
     //Vérifier les conditions du click
     btn_addToCart.addEventListener("click", (e)=>{
-        if (quantity.value > 0 && quantity.value <=100 && quantity.value != 0 && color.value != 0 ){
+        if (quantity.value > 0 && quantity.value <=100 && quantity.value != 0 && color.value != 0 && Number.isInteger(Number(quantity.value))){
 
     //Recupération du choix de la couleur
     let colorChoice = color.value;
@@ -98,7 +98,7 @@ function addToCart(article) {
     //fenêtre pop-up
     const popupConfirmation =() =>{
         if(window.confirm(`Votre séléction de ${quantityChoice} ${article.name}, de couleur "${colorChoice}", est ajoutée au panier
-Pour consulter votre panier, cliquez sur OK`)){
+        Pour consulter votre panier, cliquez sur OK`)){
             window.location.href ="cart.html";
         }
     }
@@ -133,7 +133,9 @@ Pour consulter votre panier, cliquez sur OK`)){
             localStorage.setItem("product", JSON.stringify(productLocalStorage));
             console.table(productLocalStorage);
             popupConfirmation();
-        }}
+        }} else {
+            alert("Merci de séléctionner une couleur ainsi qu'une quantité valide (entre 1 et 100)")
+        }
         });
     }
 
