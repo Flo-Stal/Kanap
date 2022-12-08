@@ -2,7 +2,7 @@ const str = window.location.href;
 const url = new URL(str);
 const idProduct = url.searchParams.get("id");
 let article = "";
-
+console.log(getProduct);
 const color = document. querySelector("#colors"); 
 const quantity = document.querySelector("#quantity");
 
@@ -27,7 +27,7 @@ function getProduct() {
         return error;
     })
 }
-
+console.log(article.name);
 
 function insertionElt(article){
     // Insertion de l'image
@@ -35,7 +35,7 @@ function insertionElt(article){
     document.querySelector(".item__img").appendChild(productImg);
     productImg.src = article.imageUrl;
     productImg.alt = article.altTxt;
-
+    console.log(article);
     // Insertion du titre
     let productName = document.querySelector(".item #title");
     productName.innerHTML = article.name;
@@ -94,7 +94,7 @@ function addToCart(article) {
 
     //Initialisation du local storage
     let productLocalStorage = JSON.parse(localStorage.getItem("product"));
-
+    console.log(productLocalStorage);
     //fenêtre pop-up
     const popupConfirmation =() =>{
         if(window.confirm(`Votre séléction de ${quantityChoice} ${article.name}, de couleur "${colorChoice}", est ajoutée au panier
