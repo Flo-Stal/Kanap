@@ -1,6 +1,6 @@
-// Initialisation Local Storage
+//Local Storage
 let productLocalStorage = JSON.parse(localStorage.getItem("product"));
-console.log(productLocalStorage);
+
 
 
 getCart()
@@ -10,6 +10,7 @@ function getCart() {
     document.querySelector("#cart__items").innerHTML = `<p>Votre panier est vide</p>`;
     } else { 
 
+// Insertion des éléments 
 for (let product in productLocalStorage){
     // Insertion de l'élément "article"
     let productArticle = document.createElement("article");
@@ -100,7 +101,6 @@ function getTotals(){
     const eltQuantity = document.querySelectorAll(".itemQuantity");
     const myLength = eltQuantity.length;
     let totalQuantity = 0;
-    console.log(myLength);
 
     for (let i = 0; i < myLength; i++) {
         totalQuantity += eltQuantity[i].valueAsNumber;
@@ -108,7 +108,6 @@ function getTotals(){
 
     let productTotalQuantity = document.querySelector('#totalQuantity');
     productTotalQuantity.innerHTML = totalQuantity;
-    console.log(totalQuantity);
 
     // Récupération du prix total
     let totalPrice = 0;
@@ -119,7 +118,6 @@ function getTotals(){
 
     let productTotalPrice = document.querySelector('#totalPrice');
     productTotalPrice.innerHTML = totalPrice;
-    console.log(totalPrice);
 }
 getTotals()
 
@@ -131,21 +129,17 @@ function modifyQuantity() {
     for (let i = 0; i < document.querySelectorAll(".itemQuantity").length; i++){
 
         let changeQuantity = document.querySelectorAll(".itemQuantity");
-        let choiceQuantity = Number(changeQuantity[i].value)
+        let choiceQuantity = parseInt(changeQuantity[i].value)
 
-        changeQuantity[i].addEventListener("change" , (event) => {
-            
-            
-            
-            if (choiceQuantity > 0 && choiceQuantity <=100 && choiceQuantity != 0  && Number.isInteger(Number(changeQuantity[0].value))) {
+        changeQuantity[i].addEventListener("change" , () => {
+        if (choiceQuantity > 0 && choiceQuantity <=100 && choiceQuantity != 0  && Number.isInteger(Number(changeQuantity[i].value))) {
             
                 //Selection de l'element à modifier
             let editQuantity = changeQuantity[i].valueAsNumber;
             let baseQuantity = productLocalStorage[i].productQuantity;
             
-            const productInCart = productLocalStorage.find(
+            const productInCart = productLocalStorage.map(
                 (elt) => elt.editQuantity !== baseQuantity);
-                
             productInCart.productQuantity = editQuantity;
             productLocalStorage[i].productQuantity = productInCart.productQuantity;
 
@@ -186,15 +180,15 @@ function deleteProduct() {
 }
 deleteProduct();
 
-//Instauration formulaire avec regex
+//Formulaire avec regex
 function getForm() {
     // Ajout des Regex
     let form = document.querySelector(".cart__order__form");
 
     //Création des expressions régulières
-    let emailRegExp = new RegExp('^[a-zA-Z0-9.-_]+[@]{1,}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,3}$');
+    let emailRegExp = new RegExp("^[a-zA-Z0-9.-_]+[@]{1,}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,3}$");
     let nameRegExp = new RegExp("^[a-zA-Z ,.'-]{1,}$");
-    let addressRegExp = new RegExp("^[0-9]{1,3}(?:(?:[,. ]){1}[-a-zA-Zàâäéèêëïîôöùûüç]+)+");
+    let addressRegExp = new RegExp("^[0-9]{1,3}(?:(?:[,. ]){1}[-a-zA-Zàâäéèêëïîôöùûüç]+)+$");
 
     // Ecoute de la modification du prénom
     form.firstName.addEventListener('change', function() {
@@ -278,7 +272,7 @@ function getForm() {
     }
 getForm();
 
-//Envoi des informations client au localstorage
+//Envoi des informations client
 function postForm(){
     const btn_order = document.querySelector("#order");
 
@@ -299,7 +293,6 @@ function postForm(){
         for (let i = 0; i<productLocalStorage.length;i++) {
             idProducts.push(productLocalStorage[i].productId);
         }
-        console.log(idProducts);
 
         const order = {
             contact : {
@@ -324,7 +317,6 @@ function postForm(){
         fetch("http://localhost:3000/api/products/order", options)
         .then((response) => response.json())
         .then((data) => {
-            console.log(data);
             localStorage.clear();
             localStorage.setItem("orderId", data.orderId);
 

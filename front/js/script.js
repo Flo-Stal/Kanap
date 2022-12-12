@@ -1,6 +1,6 @@
 insertProducts();
 
-// Récupération des articles de l'API
+// Récupération des articles depuis l'API
 async function getArticles() {
 const articlesApi = await fetch("http://localhost:3000/api/products/");
 if (articlesApi.ok === true) {
@@ -14,12 +14,10 @@ async function insertProducts() {
 const result = await getArticles()
     .then((APIreturn) => {
     const articles = APIreturn;
-    console.log(APIreturn);
     for (let article in articles) {
         // Insertion de l'élément "a"
         let productLink = document.createElement("a");
         document.querySelector(".items").appendChild(productLink);
-        console.log(productLink);
         productLink.href = `product.html?id=${APIreturn[article]._id}`;
         
 
